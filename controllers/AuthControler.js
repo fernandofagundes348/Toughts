@@ -43,21 +43,19 @@ module.exports = class UserController {
       password: hashedPassword
     }
 
-    try {
-      const createdUser = await User.create(user)
+    User.create(user)
+      .then((user) => {
+        req.session.userid = user.id
 
-      // initialize session
-      req.session.userid = createdUser.id
+        req.session.userid = user.id
 
-      req.flash('message', 'Cadastro realizado com sucesso!')
+        req.flash('messgae', 'Cadastro realizaado com sucesso!')
 
-      req.session.save(() => {
-        res.redirect('/')
+        req.session.save(() => {
+          res.redirect('/')
+        })
       })
-      res.redirect('/')
-    } catch (error) {
-      console.log(err)
-    }
+      .catch((err) => console.log(err))
   }
 
   static logout(req, res) {
